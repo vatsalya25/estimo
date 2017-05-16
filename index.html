@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Estimo</title>
+    <link rel="stylesheet" href="./styles/fonts.css">
+    <link rel="stylesheet" href="./styles/index.css">
+    <script src="./scripts/index.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="heading">Es<span class="heading_custom">t</span><span class="heading_custom">i</span>mo</div>
+      <div class="description">A project estimation tool</div>
+
+      <div class="line_break">
+        <div class="line"></div>
+        <div class="line_break_icon up"></div>
+        <div class="line"></div>
+      </div>
+
+      <div class="inner_container">
+        <!-- Estimation settings -->
+        <div class="configure">
+          <div class="stories">
+            <div class="title">Estimate in </div>
+            <form class="select_choice" name="baseSelector">
+              <input type="radio" id="selectBaseDays" name="selectorStory" onchange="changeBase('days')" checked="checked">
+              <label for="selectBaseDays">Days</label>
+              <input type="radio" id="selectBasePoints" name="selectorStory" onchange="changeBase('points')">
+              <label for="selectBasePoints">Points</label>
+            </form>
+          </div>
+          <div id="points" class="points hidden">
+            <div>1 point</div>
+            <div class="equal_sign"></div>
+            <input type="text" id="point_input" class="point_input" onkeypress='return event.charCode >= 48 && event.charCode <= 57' onChange="updatePointValue(this.value)" onfocus="this.value = this.value;" maxlength="2" value="4" placeholder="1"/>
+            <form class="select_choice" name="pointSelector">
+              <input type="radio" id="selectHours" name="selectorPoint" onchange="changePoint('hours')" checked="checked">
+              <label for="selectHours">Hours</label>
+              <input type="radio" id="selectDays" name="selectorPoint" onchange="changePoint('days')">
+              <label for="selectDays">Day(s)</label>
+            </form>
+          </div>
+          <div class="technology">
+            <form class="select_choice" name="techSelector">
+              <input type="radio" id="selectBoth" name="selectorTech" onchange="changeTech('both')" checked="checked">
+              <label for="selectBoth">Both</label>
+              <input type="radio" id="selectFE" name="selectorTech" onchange="changeTech('frontend')">
+              <label for="selectFE">Front end</label>
+              <input type="radio" id="selectBE" name="selectorTech" onchange="changeTech('backend')">
+              <label for="selectBE">Back end</label>
+            </form>
+          </div>
+        </div>
+
+        <!-- Estimate Fields -->
+        <div class="field_container">
+          <div id="frontend" class="frontend estimate_field">
+            <div class="title">Front end</div>
+            <div id="frontend_input_container" class="estimate_input_container"></div>
+            <div class="add_estimate_btn" onclick="addEstimate('frontend')">Add story</div>
+          </div>
+          <div id="separator" class="separator"></div>
+          <div id="backend" class="backend estimate_field">
+            <div class="title">Back end</div>
+            <div id="backend_input_container" class="estimate_input_container"></div>
+            <div class="add_estimate_btn" onclick="addEstimate('backend')">Add story</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="line_break">
+        <div class="line"></div>
+        <div class="line_break_icon down"></div>
+        <div class="line"></div>
+      </div>
+
+      <div class="summary_container">
+        <div id="frontend_summary" class="frontend_summary summary">
+          <div class="points_row summary_row">
+            <div class="summary_heading text">Total</div>
+            <div id="frontend_total" class="total_points">0</div>
+            <div class="title_base text">points</div>
+          </div>
+          <div class="dev_row summary_row">
+            <div class="summary_heading text">
+              <input id="fe_dev_number" type="number" class="dev_number" placeholder="1" value="1" onchange="updateTimeValue('frontend', this.value)">
+              <div>Developer(s)</div>
+            </div>
+            <div id="fe_time_total" class="total_points">0</div>
+            <div class="title_base text">days</div>
+          </div>
+        </div>
+        <div id="separator_summary" class="separator"></div>
+        <div id="backend_summary" class="backend_summary summary">
+          <div class="points_row summary_row">
+            <div class="summary_heading text">Total</div>
+            <div id="backend_total" class="total_points">0</div>
+            <div class="title_base text">days</div>
+          </div>
+          <div class="dev_row summary_row">
+            <div class="summary_heading text">
+              <input id="be_dev_number" type="number" class="dev_number" placeholder="1" value="1" onchange="updateTimeValue('backend', this.value)">
+              <div>Developer(s)</div>
+            </div>
+            <div id="be_time_total" class="total_points">0</div>
+            <div class="title_base text">days</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="line_break">
+        <div class="line"></div>
+        <div class="line_break_icon up"></div>
+        <div class="line"></div>
+      </div>
+
+      <div class="download_container">
+        <div class="download">
+          <!-- <div class="title">Download as</div>
+          <form class="select_choice" name="downloadselect">
+            <input type="radio" id="downloadCsv" name="selectorDownload" onchange="changeDownload('csv')" checked="checked">
+            <label for="downloadCsv">CSV</label>
+            <input type="radio" id="downloadPdf" name="selectorDownload" onchange="changeDownload('pdf')">
+            <label for="downloadPdf">PDF</label>
+          </form> -->
+          <div class="download_btn" onclick="download()">Download CSV</div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

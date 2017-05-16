@@ -1,0 +1,449 @@
+body {
+  font-family: ralewayEL;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  background-color: #111;
+  color: #fffbf2;
+  overflow: hidden;
+}
+
+.container {
+  overflow: auto;
+  background-color: #303033;
+  width: 100%;
+  min-width: 1080px;
+  max-width: 1080px;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+
+.line_break {
+  width: 85%;
+  height: 10px;
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  box-sizing: border-box;
+  animation: opacityAnimation 0.4s ease-out forwards;
+}
+
+.line_break .line {
+  flex: 1;
+  opacity: 0.2;
+  border-bottom: 1px dashed #fffbf2;
+}
+
+.line_break .line_break_icon.up, .line_break .line_break_icon.down {
+  width: 0;
+  height: 0;
+  margin: -3px 20px 0;
+  border-top: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 8px solid #fe5c5d;
+}
+
+.line_break .line_break_icon.down {
+  border-bottom: 0;
+  border-top: 8px solid #fe5c5d;
+}
+
+.heading {
+  font-size: 32px;
+  color: #fe5c5d;
+  margin: 10px 0;
+}
+
+.heading .heading_custom {
+  color: #fffbf2;
+  padding: 0 1px;
+}
+
+.description {
+  margin: 10px 0;
+}
+
+.inner_container {
+  width: 85%;
+}
+
+.configure {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  margin: 15px 0;
+  width: 100%;
+}
+
+.configure .stories, .configure .technology, .points {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+}
+
+/* Styling for the radio select options - START */
+.select_choice {
+  border: solid 1px #fe5c5d;
+  background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 45%, rgba(255,215,215,1) 100%);
+  margin-left: 10px;
+  display: flex;
+  border-radius: 20px;
+  overflow: hidden;
+  user-select: none;
+}
+
+input[type=radio] {
+  position: absolute;
+  visibility: hidden;
+  display: none;
+}
+
+label {
+  color: #303033;
+  display: inline-block;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 5px 20px;
+  transition: all 0.4s ease-out;
+}
+
+input[type=radio]:active + label {
+  background: linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 45%, rgba(255,215,215,1) 100%);
+}
+
+input[type=radio]:checked:active + label {
+  color: #fffbf2;
+  background: linear-gradient(to top, rgba(250,145,147,1) 0%, rgba(254,92,92,1) 67%, rgba(247,116,118,1) 100%);
+}
+
+input[type=radio]:checked + label {
+  color: #fffbf2;
+  background: linear-gradient(to bottom, rgba(250,145,147,1) 0%, rgba(254,92,92,1) 67%, rgba(247,116,118,1) 100%);
+}
+
+label + input[type=radio] + label {
+  border-left: solid 1px #fe5c5d;
+}
+/* Styling for the radio select options - END */
+
+.points {
+  margin-left: 20px;
+}
+
+.points .equal_sign {
+  margin: 0 10px;
+  width: 6px;
+  height: 3px;
+  border-top: 1px solid #fffbf2;
+  border-bottom: 1px solid #fffbf2;
+}
+
+.points .point_input {
+  outline: none;
+  background: transparent;
+  padding: 6px 5px;
+  width: 25px;
+  text-align: center;
+  border: 0;
+  border-bottom: 1px solid #fffbf2;
+  color: #fffbf2;
+  font-size: 14px;
+  font-family: ralewayEL;
+}
+
+.technology {
+  margin-left: auto;
+}
+
+/* styling for estimate fields */
+.field_container {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  margin: 30px 0;
+  height: auto;
+  transition: all 1s ease-out;
+}
+
+.estimate_field {
+  flex: 1;
+  padding: 0 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  font-family: ralewayL;
+  transition: display 1s ease-out;
+}
+
+.estimate_field .title {
+  font-size: 32px;
+  color: #fe5c5d;
+}
+
+/* INPUT CONTAINER containing all stories for a technology */
+.estimate_input_container {
+  width: 100%;
+  margin-top: 20px;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  align-items: center;
+  font-family: ralewayEL;
+  animation: opacityAnimation 0.4s ease-out forwards;
+}
+
+/* INPUT WRAPPER containing the actual inputs for a story */
+.input_wrapper {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 40px;
+  margin-bottom: 20px;
+}
+
+/* styling the story name and story assumption TEXT input boxes */
+.input_wrapper .estimate_name, .input_wrapper .estimate_assumption {
+  outline: none;
+  background: transparent;
+  padding: 6px 5px;
+  width: 100%;
+  margin: 0 10px 0 auto;
+  text-align: center;
+  border: 0;
+  border-bottom: 1px solid #fffbf2;
+  color: #fffbf2;
+  font-size: 16px;
+  font-family: ralewayEL;
+  animation: opacityAnimation 0.4s ease-out forwards;
+}
+
+.input_wrapper .estimate_assumption {
+  flex: 1;
+  animation: slide 0.4s ease-out forwards;
+}
+
+/* styling the story estimate NUMBER input boxes */
+.input_wrapper .estimate_input {
+  outline: none;
+  background: transparent;
+  padding: 6px 5px;
+  width: 15%;
+  margin: 0 10px;
+  text-align: center;
+  border: 0;
+  border-bottom: 1px solid #fffbf2;
+  color: #fffbf2;
+  font-size: 16px;
+  font-family: ralewayEL;
+  animation: opacityAnimation 0.4s ease-out forwards;
+}
+
+.input_wrapper .input_base {
+  animation: opacityAnimation 0.4s ease-out forwards;
+}
+
+/* Hide HTML5 Up and Down arrows inside the number input */
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input::placeholder {
+  color: #fff;
+  opacity: 0.2;
+}
+
+/* BUTTONS - add story button and download button styling */
+.add_estimate_btn, .download_btn {
+  width: 150px;
+  padding: 13px;
+  margin: 20px 0 20px auto;
+  box-sizing: border-box;
+  position: relative;
+  top: 0;
+  border-radius: 2px;
+  background-color: #fffbf2;
+  color: #fe5c5d;
+  text-align: center;
+  box-shadow: 0 2px 1px #fe5c5d;
+  font-family: ralewayL;
+  cursor: pointer;
+  background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 45%, rgba(255,215,215,1) 100%);
+  user-select: none;
+  animation: opacityAnimation 0.4s ease-out forwards;
+}
+
+.add_estimate_btn:active, .download_btn:active {
+  box-shadow: none;
+  background: linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 45%, rgba(255,215,215,1) 100%);
+  top: 2px;
+}
+
+/* button styling for deleting an estimate */
+.delete_estimate {
+  background: url('./../assets/images/delete_red.png') center right / 20px no-repeat;
+  height: 100%;
+  width: 50px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.delete_estimate:active {
+  background-image: url('./../assets/images/delete_white.png')
+}
+
+/* show/hide assumptions for a story */
+.show_assumption, .hide_assumption {
+  background: url('./../assets/images/add_red.png') center right / 20px no-repeat;
+  height: 100%;
+  width: 50px;
+  margin-left: 10px;
+  cursor: pointer;
+  animation: opacityAnimation 0.4s ease-out forwards;
+}
+
+.hide_assumption {
+  background-image: url('./../assets/images/minus_red.png');
+}
+
+.show_assumption:active, .hide_assumption:active {
+  background-image: url('./../assets/images/add_white.png')
+}
+
+.hide_assumption:active {
+  background-image: url('./../assets/images/minus_white.png');
+}
+
+/* SUMMARY */
+.summary_container {
+  width: 85%;
+  min-height: 80px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+  box-sizing: border-box;
+  transition: all 1s ease-out;
+}
+
+.summary {
+  flex: 1;
+  padding: 0 20px;
+  width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+}
+
+.summary .summary_row {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 18px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.summary_row .summary_heading {
+  text-align: center;
+  width: 60%;
+  margin-right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.summary_row .summary_heading .dev_number {
+  outline: none;
+  background: transparent;
+  padding: 6px 5px;
+  flex: 0 0 20%;
+  width: 20%;
+  margin-right: 20px;
+  text-align: center;
+  border: 0;
+  border-bottom: 1px solid #fffbf2;
+  color: #fffbf2;
+  font-size: 16px;
+  font-family: ralewayEL;
+  animation: opacityAnimation 0.4s ease-out forwards;
+}
+
+.summary_row .total_points {
+  width: 20%;
+  margin-left: auto;
+  text-align: center;
+}
+
+.summary_row .title_base {
+  width: 25%;
+  margin-left: auto;
+  text-align: center;
+}
+
+/* VERTICAL line separator between frontend and backend */
+.separator {
+  width: 1px;
+  height: auto;
+  border-right: 1px dashed #fffbf2;
+  opacity: 0.2;
+}
+
+/* DOWNLOAD - class defined above with add_estimate_btn */
+.download_container {
+  width: 85%;
+  margin: 20px 0 50px;
+}
+
+.download {
+  float: right;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  margin: 0 20px 0 auto;
+}
+
+.download_btn {
+  margin: 0 0 0 20px;
+}
+
+/* to hide elements */
+.hidden {
+  display: none;
+}
+
+/* keyframes for animation */
+@keyframes slide {
+  0% {
+    margin: 0 110px 0 100px;
+  }
+  100% {
+    margin: 0 10px 0 0;
+  }
+}
+
+@keyframes opacityAnimation {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

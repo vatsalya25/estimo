@@ -1,0 +1,39 @@
+@font-face {
+  font-family: nexaB;
+  src: url('./../assets/fonts/nexa/NexaBold.otf');
+}
+
+@font-face {
+  font-family: nexaL;
+  src: url('./../assets/fonts/nexa/NexaLight.otf');
+}
+
+@font-face {
+  font-family: ralewayB;
+  src: url('./../assets/fonts/raleway/Raleway-Bold.ttf');
+}
+
+@font-face {
+  font-family: ralewayM;
+  src: url('./../assets/fonts/raleway/Raleway-Medium.ttf');
+}
+
+@font-face {
+  font-family: ralewayL;
+  src: url('./../assets/fonts/raleway/Raleway-Light.ttf');
+}
+
+@font-face {
+  font-family: ralewayT;
+  src: url('./../assets/fonts/raleway/Raleway-Thin.ttf');
+}
+
+@font-face {
+  font-family: ralewaySB;
+  src: url('./../assets/fonts/raleway/Raleway-SemiBold.ttf');
+}
+
+@font-face {
+  font-family: ralewayEL;
+  src: url('./../assets/fonts/raleway/Raleway-ExtraLight.ttf');
+}

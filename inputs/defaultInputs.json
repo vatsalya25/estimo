@@ -1,0 +1,4 @@
+{
+  "frontend": ["Project setup", "Splash screen", "Login screen", "Landing page"],
+  "backend": ["Project setup", "Deployment", "Penetration testing", "User Management"]
+}
