@@ -1,22 +1,38 @@
-let state = {
+let initialState = {
   base: 'days',
+  point: 'days',
+  pointValue: 1,
   fileType: 'csv',
   data: [],
-  pointsSum: [],        // this array contains two numbers -> 1st value is for frontend, 2nd for backend
-  timeSum: [],          // this array contains two numbers -> 1st value is for frontend, 2nd for backend
-  devNumbers: [1, 1]        // this array contains two numbers -> 1st value is for frontend, 2nd for backend
+  baseTime: [],
+  selections: ['selectBaseDays', 'selectHours'],           // this array contains two numbers -> 1st value is for days/points selection toggle, 2nd for hours/day selection toggle
+  pointsSum: [],                                           // this array contains two numbers -> 1st value is for frontend, 2nd for backend
+  timeSum: [],                                             // this array contains two numbers -> 1st value is for frontend, 2nd for backend
+  devNumbers: [1, 1]                                       // this array contains two numbers -> 1st value is for frontend, 2nd for backend
 };
 
-const oReq = new XMLHttpRequest();
-oReq.onload = reqListener;
-oReq.open("get", "./inputs/defaultInputs.json", true);
-oReq.send();
+let state = {};
+
+const getInitialState = function() {
+  state = JSON.parse(localStorage.getItem('estimo_data'));
+  if(isEmpty(state)) {
+    state = Object.assign({}, initialState);
+    setDefaultSelections();
+    const oReq = new XMLHttpRequest();
+    oReq.onload = reqListener;
+    oReq.open("get", "./inputs/defaultInputs.json", true);
+    oReq.send();
+  } else {
+    setDefaultSelections();
+    loadDataIntoDom();
+  }
+}
 
 function reqListener(e) {
-  let plotJson = JSON.parse(this.responseText);
-  state.defaults = plotJson;
+  let initialInputsJson = JSON.parse(this.responseText);
+  state.defaults = initialInputsJson;
 
-  plotJson.frontend.forEach(function(name, indexPos) {
+  initialInputsJson.frontend.forEach(function(name, indexPos) {
     document.getElementById('frontend_input_container').appendChild(createElement('frontend_input', name, indexPos, null, 'days'));
     state.frontendIndex = indexPos;
     let obj = {
@@ -28,7 +44,7 @@ function reqListener(e) {
     state.feIndex = indexPos;
   });
 
-  plotJson.backend.forEach(function(name, indexPos) {
+  initialInputsJson.backend.forEach(function(name, indexPos) {
     document.getElementById('backend_input_container').appendChild(createElement('backend_input', name, indexPos, null, 'days'));
     state.backendIndex = indexPos;
     let obj = {
@@ -41,13 +57,37 @@ function reqListener(e) {
   });
 
   document.getElementById('frontend_input0').children[1].focus();
+}
+
+const setDefaultSelections = function() {
+  state.selections.forEach(function(selection) {
+    document.getElementById(selection).checked = true;
+    showPointInput(state.base, false);
+  });
+
   document.getElementsByClassName('title_base')[0].innerText = state.base;
   document.getElementsByClassName('title_base')[1].innerText = state.base;
-  document.getElementsByClassName('title_base')[2].innerText = state.base;
-  document.getElementsByClassName('title_base')[3].innerText = state.base;
-};
 
-const createElement = function(inputId, name, indexPos, estimate, base) {
+  document.getElementsByClassName('title_time')[0].innerText = state.point;
+  document.getElementsByClassName('title_time')[1].innerText = state.point;
+
+  document.getElementsByClassName('dev_number')[0].value = state.devNumbers[0];
+  document.getElementsByClassName('dev_number')[1].value = state.devNumbers[1];
+  document.getElementById('point_input').value = state.pointValue ? state.pointValue : 1;
+}
+
+const loadDataIntoDom = function() {
+  state.data.forEach(function(data) {
+    if(data.category === 'frontend') {
+      document.getElementById('frontend_input_container').appendChild(createElement('frontend_input', data.name, data.index, data.value, state.base, data.assumption));
+    } else {
+      document.getElementById('backend_input_container').appendChild(createElement('backend_input', data.name, data.index, data.value, state.base, data.assumption));
+    }
+  });
+  calculateSums();
+}
+
+const createElement = function(inputId, name, indexPos, estimate, base, assumption) {
   const inputField = document.createElement('div');
   const idName = inputId + indexPos
   inputField.id = idName;
@@ -91,7 +131,8 @@ const createElement = function(inputId, name, indexPos, estimate, base) {
   const assumptionField = document.createElement('input');
   assumptionField.type = 'text';
   assumptionField.className = 'estimate_assumption hidden';
-  assumptionField.placeholder = 'Add assumptions';
+  assumptionField.placeholder = 'Add assumptions';assumption
+  assumptionField.value = assumption ? assumption : null;
   assumptionField.addEventListener('change', function() {
     saveInputChange(idName, 'assumption', this.value);
   }, false);
@@ -126,6 +167,7 @@ const deleteEstimate = function(estimateId) {
     }
   });
   state.data = tempArr;
+  localStorage.setItem('estimo_data', JSON.stringify(state));
 }
 
 const addAssumption = function(estimateId) {
@@ -175,19 +217,13 @@ const addEstimate = function(tech) {
     }
   }
   state.data.push(obj);
+  localStorage.setItem('estimo_data', JSON.stringify(state));
 }
 
 const changeBase = function(baseValue) {
   state.base = baseValue;
-  if (baseValue === 'days') {
-    document.getElementById('points').classList.add('hidden');
-    state.pointValue = 1;
-    state.point = null;
-  } else if (baseValue === 'points') {
-    document.getElementById('points').classList.remove('hidden');
-    state.pointValue = document.getElementById('point_input').value;
-    state.point = 'hours';
-  }
+  state.selections[0] = baseValue === 'days' ? 'selectBaseDays' : 'selectBasePoints';
+  showPointInput(baseValue, true);
 
   document.getElementsByClassName('estimate_input_container')[0].innerHTML = '';
   document.getElementsByClassName('estimate_input_container')[1].innerHTML = '';
@@ -201,17 +237,33 @@ const changeBase = function(baseValue) {
   });
 
   document.getElementsByClassName('title_base')[0].innerText = baseValue;
-  document.getElementsByClassName('title_base')[2].innerText = baseValue;
+  document.getElementsByClassName('title_base')[1].innerText = baseValue;
+  localStorage.setItem('estimo_data', JSON.stringify(state));
   baseValue === 'days' ? changePoint('days') : changePoint('hours');
 }
 
 const changePoint = function(pointBase) {
   state.point = pointBase;
-  document.getElementsByClassName('title_base')[1].innerText = pointBase;
-  document.getElementsByClassName('title_base')[3].innerText = pointBase;
+  state.selections[1] = pointBase === 'hours' ? 'selectHours' : 'selectDays';
+  document.getElementsByClassName('title_time')[0].innerText = pointBase;
+  document.getElementsByClassName('title_time')[1].innerText = pointBase;
 
   document.getElementById('point_input').focus();
+  localStorage.setItem('estimo_data', JSON.stringify(state));
   calculateSums();
+  console.log(JSON.parse(localStorage.getItem('estimo_data')));
+}
+
+const showPointInput = function(baseValue, update) {
+  if (baseValue === 'days') {
+    document.getElementById('points').classList.add('hidden');
+  } else if (baseValue === 'points') {
+    document.getElementById('points').classList.remove('hidden');
+  }
+
+  if(update) {
+    localStorage.setItem('estimo_data', JSON.stringify(state));
+  }
 }
 
 const saveInputChange = function(estimateId, field, textValue) {
@@ -227,6 +279,7 @@ const saveInputChange = function(estimateId, field, textValue) {
     }
   });
 
+  localStorage.setItem('estimo_data', JSON.stringify(state));
   calculateSums();
 }
 
@@ -244,9 +297,15 @@ const calculateSums = function() {
   state.pointsSum[0] = pointSumFE;
   state.pointsSum[1] = pointSumBE;
 
+  // the base time is time required with 1 developer
+  state.baseTime[0] = pointSumFE * parseInt(document.getElementById('point_input').value);
+  state.baseTime[1] = pointSumBE * parseInt(document.getElementById('point_input').value);
+
   // calculate the time needed from the points base value
-  state.timeSum[0] = state.base === 'points' ? pointSumFE * parseInt(document.getElementById('point_input').value) / state.devNumbers[0] : pointSumFE / state.devNumbers[0] ;
-  state.timeSum[1] = state.base === 'points' ? pointSumBE * parseInt(document.getElementById('point_input').value) / state.devNumbers[1] : pointSumBE / state.devNumbers[1] ;
+  state.timeSum[0] = state.base === 'points' ? roundNumber(state.baseTime[0] / state.devNumbers[0]) : roundNumber(pointSumFE / state.devNumbers[0]) ;
+  state.timeSum[1] = state.base === 'points' ? roundNumber(state.baseTime[1] / state.devNumbers[1]) : roundNumber(pointSumBE / state.devNumbers[1]) ;
+
+  localStorage.setItem('estimo_data', JSON.stringify(state));
   updateSummary();
 }
 
@@ -259,18 +318,20 @@ const updateSummary = function() {
 
 const updatePointValue = function(pointValue) {
   state.pointValue = pointValue;
+  localStorage.setItem('estimo_data', JSON.stringify(state));
   calculateSums();
 }
 
 const updateTimeValue = function(tech, devNumber) {
   if(tech === 'frontend') {
-    state.timeSum[0] = state.timeSum[0] * state.devNumbers[0] / parseInt(devNumber);
+    state.timeSum[0] = roundNumber(state.baseTime[0] / parseInt(devNumber));
     state.devNumbers[0] = parseInt(devNumber);
   } else if(tech === 'backend') {
-    state.timeSum[1] = state.timeSum[1] * state.devNumbers[1] / parseInt(devNumber);
+    state.timeSum[1] = roundNumber(state.baseTime[1] / parseInt(devNumber));
     state.devNumbers[1] = parseInt(devNumber);
   }
-  console.log(state.devNumbers);
+
+  localStorage.setItem('estimo_data', JSON.stringify(state));
   updateSummary();
 }
 
@@ -301,6 +362,7 @@ const changeTech = function(tech) {
     document.getElementById('separator_summary').classList.remove('hidden');
     document.getElementById('backend_summary').classList.remove('hidden');
   }
+  localStorage.setItem('estimo_data', JSON.stringify(state));
 }
 
 const changeDownload = function(fileType) {
@@ -353,10 +415,10 @@ getFormattedSummary = function(tech) {
   } else if (tech === 'backend') {
     totalPoints = state.pointsSum[1];
     totalTime = state.timeSum[1];
-    totalDevs = state.devNumbers[0];
+    totalDevs = state.devNumbers[1];
   } else {
     totalPoints = state.pointsSum[0] + state.pointsSum[1];
-    totalTime = state.timeSum[0] + state.timeSum[1];
+    totalTime = state.timeSum[0] > state.timeSum[1] ? state.timeSum[0] : state.timeSum[1];
     totalDevs = state.devNumbers[0] + state.devNumbers[1];
   }
   totalString = 'Total,' + tech + columnDelimiter + totalPoints + columnDelimiter + state.base + '\r\n';
@@ -367,11 +429,11 @@ getFormattedSummary = function(tech) {
 getFormattedJSON = function(data) {
   let json = [];
   data.forEach(function(estimation) {
-    if(estimation.name && estimation.name !== '' && estimation.value && estimation.value !== '' && estimation.category === 'frontend') {
+    if(estimation.name && estimation.name !== '' && estimation.category === 'frontend') {
       let obj = {
         Stories: estimation.name,
         Category: estimation.category,
-        Estimate: estimation.value,
+        Estimate: estimation.value ? estimation.value : '-',
         Base: state.base,
         Assumptions: estimation.assumption ? estimation.assumption : ''
       }
@@ -379,11 +441,11 @@ getFormattedJSON = function(data) {
     }
   });
   data.forEach(function(estimation) {
-    if(estimation.name && estimation.name !== '' && estimation.value && estimation.value !== '' && estimation.category === 'backend') {
+    if(estimation.name && estimation.name !== '' && estimation.category === 'backend') {
       let obj = {
         Stories: estimation.name,
         Category: estimation.category,
-        Estimate: estimation.value,
+        Estimate: estimation.value ? estimation.value : '-',
         Base: state.base,
         Assumptions: estimation.assumption ? estimation.assumption : ''
       }
@@ -405,4 +467,15 @@ const download = function() {
   linkElement.setAttribute('href', dataUri);
   linkElement.setAttribute('download', exportFileDefaultName);
   linkElement.click();
+}
+
+const isEmpty = function(obj) {
+  for(var key in obj) {
+    if(obj.hasOwnProperty(key)) return false;
+  }
+  return true;
+}
+
+const roundNumber = function(number) {
+  return Math.round(number * 10) / 10;
 }

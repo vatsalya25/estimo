@@ -392,7 +392,7 @@ input::placeholder {
   text-align: center;
 }
 
-.summary_row .title_base {
+.summary_row .title_base, .summary_row .title_time {
   width: 25%;
   margin-left: auto;
   text-align: center;

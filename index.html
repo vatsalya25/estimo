@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="./styles/index.css">
     <script src="./scripts/index.js"></script>
   </head>
-  <body>
+  <body onload="getInitialState()">
     <div class="container">
       <div class="heading">Es<span class="heading_custom">t</span><span class="heading_custom">i</span>mo</div>
       <div class="description">A project estimation tool</div>
@@ -23,8 +23,8 @@
         <div class="configure">
           <div class="stories">
             <div class="title">Estimate in </div>
-            <form class="select_choice" name="baseSelector">
-              <input type="radio" id="selectBaseDays" name="selectorStory" onchange="changeBase('days')" checked="checked">
+            <form class="select_choice" id="baseSelector">
+              <input type="radio" id="selectBaseDays" name="selectorStory" onchange="changeBase('days')">
               <label for="selectBaseDays">Days</label>
               <input type="radio" id="selectBasePoints" name="selectorStory" onchange="changeBase('points')">
               <label for="selectBasePoints">Points</label>
@@ -33,7 +33,7 @@
           <div id="points" class="points hidden">
             <div>1 point</div>
             <div class="equal_sign"></div>
-            <input type="text" id="point_input" class="point_input" onkeypress='return event.charCode >= 48 && event.charCode <= 57' onChange="updatePointValue(this.value)" onfocus="this.value = this.value;" maxlength="2" value="4" placeholder="1"/>
+            <input type="text" id="point_input" class="point_input" onkeypress='return event.charCode >= 48 && event.charCode <= 57' onChange="updatePointValue(this.value)" onfocus="this.value = this.value;" maxlength="2" placeholder="1"/>
             <form class="select_choice" name="pointSelector">
               <input type="radio" id="selectHours" name="selectorPoint" onchange="changePoint('hours')" checked="checked">
               <label for="selectHours">Hours</label>
@@ -84,11 +84,11 @@
           </div>
           <div class="dev_row summary_row">
             <div class="summary_heading text">
-              <input id="fe_dev_number" type="number" class="dev_number" placeholder="1" value="1" onchange="updateTimeValue('frontend', this.value)">
+              <input id="fe_dev_number" type="number" class="dev_number" placeholder="1" onchange="updateTimeValue('frontend', this.value)">
               <div>Developer(s)</div>
             </div>
             <div id="fe_time_total" class="total_points">0</div>
-            <div class="title_base text">days</div>
+            <div class="title_time text">days</div>
           </div>
         </div>
         <div id="separator_summary" class="separator"></div>
@@ -100,11 +100,11 @@
           </div>
           <div class="dev_row summary_row">
             <div class="summary_heading text">
-              <input id="be_dev_number" type="number" class="dev_number" placeholder="1" value="1" onchange="updateTimeValue('backend', this.value)">
+              <input id="be_dev_number" type="number" class="dev_number" placeholder="1" onchange="updateTimeValue('backend', this.value)">
               <div>Developer(s)</div>
             </div>
             <div id="be_time_total" class="total_points">0</div>
-            <div class="title_base text">days</div>
+            <div class="title_time text">days</div>
           </div>
         </div>
       </div>
